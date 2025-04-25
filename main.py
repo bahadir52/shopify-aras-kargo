@@ -35,7 +35,7 @@ def validate_city(address_city, full_address):
         for city in VALID_CITIES:
             if city.lower() in full_address.lower():
                 return city
-        return "İstanbul"
+        return ""
     return address_city
 
 
