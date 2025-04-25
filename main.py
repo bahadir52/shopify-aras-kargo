@@ -76,3 +76,6 @@ def get_orders():
         return jsonify(orders)
     else:
         return jsonify([])
+      @app.route("/", methods=["GET"])
+def home():
+    return "Sistem çalışıyor ✅"
