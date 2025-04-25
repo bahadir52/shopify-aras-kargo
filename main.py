@@ -67,7 +67,8 @@ def webhook():
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=10000)
-  @app.route("/orders", methods=["GET"])
+
+@app.route("/orders", methods=["GET"])
 def get_orders():
     if os.path.exists(ORDERS_FILE):
         with open(ORDERS_FILE, "r", encoding="utf-8") as f:
@@ -75,4 +76,3 @@ def get_orders():
         return jsonify(orders)
     else:
         return jsonify([])
-
