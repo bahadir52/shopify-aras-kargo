@@ -38,6 +38,7 @@ def validate_city(address_city, full_address):
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
+    print("Webhook raw data:", request.data)
     data = request.get_json()
     try:
         shipping = data["shipping_address"]
