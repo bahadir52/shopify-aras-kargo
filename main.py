@@ -79,3 +79,13 @@ def get_orders():
 @app.route("/", methods=["GET"])
 def home():
     return "Sistem çalışıyor ✅"
+
+@app.route("/orders", methods=["GET"])
+def get_orders():
+    try:
+        with open("pending_orders.json", "r", encoding="utf-8") as f:
+            orders = json.load(f)
+        return jsonify(orders)
+    except:
+        return jsonify([])
+
