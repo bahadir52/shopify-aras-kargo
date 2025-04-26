@@ -38,26 +38,35 @@ def validate_city(address_city, full_address):
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    print("Webhook raw data:", request.data)
-    data = request.get_json()
     try:
-        shipping = data["shipping_address"]
-        city = validate_city(shipping.get("province", ""), shipping.get("address1", ""))
+        raw_data = request.data.decode('utf-8')
+        print("Webhook decoded data:", raw_data)
+        data = json.loads(raw_data)
+    except Exception as e:
+        print("Error parsing webhook:", str(e))
+        return jsonify({"success": False, "error": "Invalid data"}), 400
+
+    try:
+        shipping = data.get("shipping_address", {})
+        city = validate_city(shipping.get("city", ""), shipping.get("address1", ""))
 
         order_data = {
-            "order_id": data["id"],
-            "name": data["name"],
+            "order_id": data.get("id", ""),
+            "name": data.get("name", ""),
             "address": shipping.get("address1", ""),
             "city": city,
             "phone": shipping.get("phone", ""),
-            "price": data["total_price"],
-            "cod": data["financial_status"] == "pending"
+            "price": data.get("total_price", ""),
+            "cod": (data.get("financial_status") == "pending")
         }
 
         save_order(order_data)
+        print("Order saved ✅")
         return jsonify({"success": True, "message": "Order saved."})
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 400
+        print("Error saving order:", str(e))
+        return jsonify({"success": False, "error": "Processing error"}), 400
+
 
 @app.route("/orders", methods=["GET"])
 def get_orders():
